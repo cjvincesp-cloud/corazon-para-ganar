@@ -9,12 +9,12 @@
 <body class="bg-[#052d62] text-white font-sans min-h-screen flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-[#f1f1f1] rounded-3xl p-8 shadow-2xl text-[#052d62]">
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-black uppercase italic tracking-tighter leading-none">CORAZÓN PARA GANAR</h1>
+            <h1 class="text-3xl font-black uppercase italic tracking-tighter leading-none text-[#052d62]">CORAZÓN PARA GANAR</h1>
             <p class="text-[10px] font-bold opacity-70 italic text-[#cbb155] tracking-widest uppercase mt-1">estatus oficial grone</p>
         </header>
 
         <div class="space-y-6">
-            <input type="tel" id="celularInput" maxlength="9" placeholder="999888777" 
+            <input type="tel" id="celularInput" maxlength="9" placeholder="Ingresa tu celular" 
                 class="w-full p-4 rounded-xl border-4 border-[#cbb155] text-2xl text-center font-bold bg-white focus:outline-none placeholder:text-gray-200">
             <button onclick="consultarEstatus()" class="w-full bg-[#052d62] text-[#cbb155] font-black py-5 rounded-xl text-lg shadow-lg hover:bg-black transition-all uppercase italic">
                 CONSULTAR REGISTRO
@@ -32,11 +32,11 @@
             const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSVSgHlway102guhsuSOkbVIZyBLybfeCAJpAEAUYf4gp3ir25Av8LHp41PSAIc81TuWHnSgIu7jXuv/pub?gid=666326084&single=true&output=csv';
 
             if (celularUsuario.length < 9) {
-                alert("Por favor, ingresa los 9 dígitos.");
+                alert("Por favor, ingresa los 9 dígitos de tu celular.");
                 return;
             }
 
-            resultadoDiv.innerHTML = "Buscando...";
+            resultadoDiv.innerHTML = "Buscando en la base de datos...";
             resultadoDiv.className = "mt-6 p-6 rounded-2xl text-center font-bold border-2 bg-gray-100 block text-[#052d62] animate-pulse";
 
             try {
@@ -48,31 +48,31 @@
                 for (let i = filas.length - 1; i >= 1; i--) {
                     const columnas = filas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     
-                    // MAPEO DE COLUMNAS:
-                    const celularCSV = columnas[0] ? columnas[0].replace(/\D/g, '').trim() : ""; // Col A
+                    // NUEVO MAPEO DE COLUMNAS ACTUALIZADO:
+                    const celularCSV = columnas[0] ? columnas[0].replace(/\D/g, '').trim() : ""; // Col A (0)
                     
                     if (celularCSV === celularUsuario) {
-                        const nombre = columnas[3] ? columnas[3].replace(/['"]+/g, '').trim() : "SIN NOMBRE"; // Col D
-                        const codigoPG = columnas[20] ? columnas[20].replace(/['"]+/g, '').trim() : "---"; // Col U
-                        const premioGratis = columnas[14] ? columnas[14].replace(/['"]+/g, '').trim() : "No inscrito"; // Col O
-                        const productoVIP = columnas[25] ? columnas[25].replace(/['"]+/g, '').trim() : "NO"; // Col Z
+                        const nombre = columnas[3] ? columnas[3].replace(/['"]+/g, '').trim() : "HINCHA"; // Col D (3)
+                        const codigoPG = columnas[21] ? columnas[21].replace(/['"]+/g, '').trim() : "---"; // Col V (21)
+                        const premioGratis = columnas[12] ? columnas[12].replace(/['"]+/g, '').trim() : "No registrado"; // Col M (12)
+                        const premioVIP = columnas[16] ? columnas[16].replace(/['"]+/g, '').trim() : "NO"; // Col Q (16)
                         
                         resultadoDiv.innerHTML = `
                             <div class="text-xl mb-4 border-b-2 border-[#cbb155] pb-2 uppercase font-black">${nombre}</div>
                             
                             <div class="mb-4">
-                                <span class="text-[9px] block opacity-50 uppercase font-black">TU CÓDIGO PG:</span>
+                                <span class="text-[9px] block opacity-50 uppercase font-black">CÓDIGO PG:</span>
                                 <span class="text-3xl font-black text-[#052d62] bg-yellow-400 px-3 rounded-lg">${codigoPG}</span>
                             </div>
 
                             <div class="mb-4 py-3 border-t border-gray-200">
                                 <span class="text-[10px] block font-black text-[#cbb155] uppercase">Sorteo gratuito 🎁</span>
-                                <span class="text-lg block font-bold leading-tight">${premioGratis}</span>
+                                <span class="text-lg block font-bold leading-tight uppercase">${premioGratis}</span>
                             </div>
 
-                            <div class="mb-4 py-3 border-t border-gray-200">
-                                <span class="text-[10px] block font-black text-[#cbb155] uppercase font-black italic">Sorteo VIP 🏆</span>
-                                <span class="text-lg block font-bold leading-tight uppercase">${productoVIP}</span>
+                            <div class="mb-0 py-3 border-t border-gray-200">
+                                <span class="text-[10px] block font-black text-[#cbb155] uppercase italic font-black">Sorteo VIP 🏆</span>
+                                <span class="text-lg block font-bold leading-tight uppercase italic">${premioVIP}</span>
                             </div>
                         `;
                         resultadoDiv.className = "mt-6 p-6 rounded-2xl text-center font-bold border-4 border-[#cbb155] bg-white text-[#052d62] block shadow-xl";
@@ -82,7 +82,7 @@
                 }
 
                 if (!encontrado) {
-                    resultadoDiv.innerHTML = "NÚMERO NO ENCONTRADO";
+                    resultadoDiv.innerHTML = "EL NÚMERO NO ESTÁ REGISTRADO EN GDR";
                     resultadoDiv.className = "mt-6 p-6 rounded-2xl text-center font-bold border-2 border-red-500 bg-red-100 text-red-700 block";
                 }
             } catch (error) {
