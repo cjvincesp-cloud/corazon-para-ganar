@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Corazón para Ganar - GDR</title>
+    <title>Corazón para Ganar</title>
 </head>
 <body class="bg-[#052d62] text-white font-sans min-h-screen flex items-center justify-center p-4">
     <div class="max-w-md w-full bg-[#f1f1f1] rounded-3xl p-8 shadow-2xl text-[#052d62]">
@@ -14,14 +14,13 @@
         </header>
 
         <div class="space-y-6">
-            <input type="tel" id="celularInput" maxlength="9" placeholder="Ingresa tu celular" 
-                class="w-full p-4 rounded-xl border-4 border-[#cbb155] text-2xl text-center font-bold bg-white focus:outline-none placeholder:text-gray-200">
+            <input type="tel" id="celularInput" maxlength="9" placeholder="999888777" 
+                class="w-full p-4 rounded-xl border-4 border-[#cbb155] text-2xl text-center font-bold bg-white focus:outline-none placeholder:text-gray-300">
             <button onclick="consultarEstatus()" class="w-full bg-[#052d62] text-[#cbb155] font-black py-5 rounded-xl text-lg shadow-lg hover:bg-black transition-all uppercase italic">
                 CONSULTAR REGISTRO
             </button>
             
-            <div id="resultado" class="hidden mt-6 p-6 rounded-2xl text-center font-bold border-2">
-                </div>
+            <div id="resultado" class="hidden mt-6 p-6 rounded-2xl text-center font-bold border-2"></div>
         </div>
     </div>
 
@@ -45,34 +44,39 @@
                 const filas = data.split('\n');
                 let encontrado = false;
 
+                // Buscamos de abajo hacia arriba para traer el registro válido más reciente
                 for (let i = filas.length - 1; i >= 1; i--) {
                     const columnas = filas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    
-                    // NUEVO MAPEO DE COLUMNAS ACTUALIZADO:
-                    const celularCSV = columnas[0] ? columnas[0].replace(/\D/g, '').trim() : ""; // Col A (0)
-                    
-                    if (celularCSV === celularUsuario) {
-                        const nombre = columnas[3] ? columnas[3].replace(/['"]+/g, '').trim() : "HINCHA"; // Col D (3)
-                        const codigoPG = columnas[21] ? columnas[21].replace(/['"]+/g, '').trim() : "---"; // Col V (21)
-                        const premioGratis = columnas[12] ? columnas[12].replace(/['"]+/g, '').trim() : "No registrado"; // Col M (12)
-                        const premioVIP = columnas[16] ? columnas[16].replace(/['"]+/g, '').trim() : "NO"; // Col Q (16)
-                        
+                    const celularCSV = columnas[0] ? columnas[0].replace(/\D/g, '').trim() : "";
+                    const estatusM = columnas[12] ? columnas[12].trim() : ""; // Columna M
+
+                    if (celularCSV === celularUsuario && estatusM !== "registro no válido") {
+                        const nombre = columnas[3] ? columnas[3].replace(/['"]+/g, '').trim() : "HINCHA";
+                        const codigoPG = columnas[21] ? columnas[21].replace(/['"]+/g, '').trim() : "---";
+                        const gratuitoText = columnas[25] ? columnas[25].replace(/['"]+/g, '').trim() : "no hay registro ❌";
+                        const vipText = columnas[26] ? columnas[26].replace(/['"]+/g, '').trim() : "AL VIP, no estas participando";
+
+                        // Lógica visual para el mensaje gratuito
+                        const msgGratuito = (gratuitoText === "Inscripción correcta 🎁") 
+                            ? "Estas participando al gratuito 🎁" 
+                            : "no hay registro ❌";
+
                         resultadoDiv.innerHTML = `
                             <div class="text-xl mb-4 border-b-2 border-[#cbb155] pb-2 uppercase font-black">${nombre}</div>
                             
                             <div class="mb-4">
                                 <span class="text-[9px] block opacity-50 uppercase font-black">CÓDIGO PG:</span>
-                                <span class="text-3xl font-black text-[#052d62] bg-yellow-400 px-3 rounded-lg">${codigoPG}</span>
+                                <span class="text-3xl font-black text-[#052d62] bg-yellow-400 px-3 rounded-lg">${codigoPG === "repetido +1 vez" ? "---" : codigoPG}</span>
                             </div>
 
                             <div class="mb-4 py-3 border-t border-gray-200">
-                                <span class="text-[10px] block font-black text-[#cbb155] uppercase">Sorteo gratuito 🎁</span>
-                                <span class="text-lg block font-bold leading-tight uppercase">${premioGratis}</span>
+                                <span class="text-lg block font-bold leading-tight">${msgGratuito}</span>
                             </div>
 
                             <div class="mb-0 py-3 border-t border-gray-200">
-                                <span class="text-[10px] block font-black text-[#cbb155] uppercase italic font-black">Sorteo VIP 🏆</span>
-                                <span class="text-lg block font-bold leading-tight uppercase italic">${premioVIP}</span>
+                                <span class="text-lg block font-black italic ${vipText === 'Accedes 😎' ? 'text-blue-600' : 'text-gray-400'}">
+                                    ${vipText}
+                                </span>
                             </div>
                         `;
                         resultadoDiv.className = "mt-6 p-6 rounded-2xl text-center font-bold border-4 border-[#cbb155] bg-white text-[#052d62] block shadow-xl";
@@ -82,7 +86,7 @@
                 }
 
                 if (!encontrado) {
-                    resultadoDiv.innerHTML = "EL NÚMERO NO ESTÁ REGISTRADO EN GDR";
+                    resultadoDiv.innerHTML = "No estas registrado";
                     resultadoDiv.className = "mt-6 p-6 rounded-2xl text-center font-bold border-2 border-red-500 bg-red-100 text-red-700 block";
                 }
             } catch (error) {
