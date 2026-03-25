@@ -45,7 +45,7 @@
                 const filas = data.split('\n');
                 let encontrado = false;
 
-                // Buscamos de abajo hacia arriba (más reciente)
+                // Buscamos de abajo hacia arriba para el registro válido más reciente
                 for (let i = filas.length - 1; i >= 1; i--) {
                     const columnas = filas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     const celularCSV = columnas[0] ? columnas[0].replace(/\D/g, '').trim() : "";
@@ -54,37 +54,30 @@
                     if (celularCSV === celularUsuario && estatusM !== "registro no válido") {
                         const nombre = columnas[3] ? columnas[3].replace(/['"]+/g, '').trim() : "HINCHA";
                         const codigoPG = columnas[21] ? columnas[21].replace(/['"]+/g, '').trim() : "---";
-                        const gratuitoText = columnas[25] ? columnas[25].replace(/['"]+/g, '').trim() : "no hay registro ❌";
-                        const vipText = columnas[26] ? columnas[26].replace(/['"]+/g, '').trim() : "no";
-
-                        // Lógica para el texto VIP personalizado
-                        let vipDisplay = "";
-                        let vipColor = "text-gray-400";
-                        if (vipText.toLowerCase() === "accedes 😎") {
-                            vipDisplay = "Accedes 😎";
-                            vipColor = "text-blue-700";
-                        } else {
-                            vipDisplay = "AL VIP, no estás participando";
-                        }
+                        const fechaSorteo = columnas[9] ? columnas[9].replace(/['"]+/g, '').trim() : ""; // Col J
+                        const productoGratuito = columnas[15] ? columnas[15].replace(/['"]+/g, '').trim() : ""; // Col P
+                        const estatusGratuito = columnas[25] ? columnas[25].replace(/['"]+/g, '').trim() : "no hay registro ❌"; // Col Z
+                        const estatusVIP = columnas[26] ? columnas[26].replace(/['"]+/g, '').trim() : "AL VIP, no estas participando"; // Col AA
 
                         resultadoDiv.innerHTML = `
-                            <div class="text-2xl mb-5 border-b-2 border-gray-200 pb-2 uppercase font-black tracking-tight">${nombre}</div>
+                            <div class="text-2xl mb-5 border-b-2 border-gray-200 pb-2 uppercase font-black">${nombre}</div>
                             
                             <div class="mb-5">
-                                <span class="text-[10px] block opacity-50 uppercase font-bold mb-1">Tu Código PG:</span>
+                                <span class="text-[10px] block opacity-50 uppercase font-bold">TU CÓDIGO PG:</span>
                                 <span class="text-4xl font-black text-[#052d62] bg-[#cbb155] px-6 py-1 rounded-lg shadow-sm italic">${codigoPG === "repetido +1 vez" ? "---" : codigoPG}</span>
                             </div>
 
                             <div class="mb-5 py-4 border-t border-gray-200">
-                                <span class="text-[11px] block font-black text-[#cbb155] uppercase mb-1">Sorteo Gratuito 🎁</span>
-                                <span class="text-xl block font-bold leading-tight uppercase tracking-tight">${gratuitoText}</span>
-                                <span class="text-sm block opacity-70 mt-1">Fecha: 29 de marzo.</span>
+                                <span class="text-[11px] block font-black text-[#cbb155] uppercase mb-1 tracking-wider">SORTEO GRATUITO 🎁</span>
+                                <span class="text-xl block font-bold leading-tight">${estatusGratuito}</span>
+                                <p class="text-sm mt-2 text-gray-600 font-medium">Producto: <span class="font-bold">${productoGratuito}</span></p>
+                                <p class="text-xs opacity-70">Fecha: ${fechaSorteo}</p>
                             </div>
 
                             <div class="mb-0 py-4 border-t border-gray-200">
-                                <span class="text-[11px] block font-black text-[#cbb155] uppercase mb-1">VIP 🏆</span>
-                                <span class="text-xl block font-black italic tracking-tight ${vipColor}">
-                                    ${vipDisplay}
+                                <span class="text-[11px] block font-black text-[#cbb155] uppercase mb-1 tracking-wider">VIP 🏆</span>
+                                <span class="text-xl block font-black italic ${estatusVIP === 'Accedes 😎' ? 'text-blue-700' : 'text-gray-400'}">
+                                    ${estatusVIP}
                                 </span>
                             </div>
                         `;
