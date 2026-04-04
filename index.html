@@ -15,14 +15,14 @@
 
         <div class="space-y-4">
             <div>
-                <input type="tel" id="celularInput" maxlength="9" placeholder="Escribe tu número aquí..." 
-                    class="w-full p-4 rounded-xl border-4 border-[#cbb155] text-2xl text-center font-bold bg-white focus:outline-none placeholder:text-gray-300 placeholder:text-sm">
+                <input type="tel" id="celularInput" maxlength="9" placeholder="999888777" 
+                    class="w-full p-4 rounded-xl border-4 border-[#cbb155] text-2xl text-center font-bold bg-white focus:outline-none placeholder:text-gray-300">
                 <p class="text-[10px] text-center mt-2 font-bold text-[#052d62] opacity-80 italic">
                     Escribe el número de teléfono con el que te registraste para el sorteo.
                 </p>
             </div>
 
-            <button onclick="consultarEstatus()" class="w-full bg-[#052d62] text-[#cbb155] font-black py-5 rounded-xl text-lg shadow-lg hover:bg-black transition-all uppercase italic">
+            <button onclick="consultarEstatus()" class="w-full bg-[#052d62] text-[#cbb155] font-black py-5 rounded-xl text-lg shadow-lg hover:bg-black transition-all uppercase italic text-center">
                 CONSULTAR REGISTRO
             </button>
             
@@ -55,11 +55,11 @@
                 for (let i = filas.length - 1; i >= 1; i--) {
                     const columnas = filas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     const celularCSV = columnas[0] ? columnas[0].replace(/\D/g, '').trim() : "";
-                    const estatusM = columnas[12] ? columnas[12].trim() : ""; // Col M para validación de duplicados
+                    const estatusM = columnas[12] ? columnas[12].trim() : ""; // Validación duplicados
 
                     if (celularCSV === celularUsuario && estatusM !== "registro no válido") {
                         const nombre = columnas[3] ? columnas[3].replace(/['"]+/g, '').trim() : "HINCHA"; // Col D
-                        const estatusW = columnas[22] ? columnas[22].replace(/['"]+/g, '').trim() : "---"; // Col W (Validación)
+                        const codigoV = columnas[21] ? columnas[21].replace(/['"]+/g, '').trim() : "---"; // Col V (Código PG)
                         const productoP = columnas[15] ? columnas[15].replace(/['"]+/g, '').trim() : "---"; // Col P (Producto)
                         const vipAA = columnas[26] ? columnas[26].replace(/['"]+/g, '').trim() : "AL VIP, no estas participando"; // Col AA
 
@@ -67,17 +67,19 @@
                             <div class="text-2xl mb-5 border-b-2 border-gray-200 pb-2 uppercase font-black tracking-tight">${nombre}</div>
                             
                             <div class="mb-5">
-                                <span class="text-[10px] block opacity-50 uppercase font-bold mb-1 italic">ESTATUS GENERAL:</span>
-                                <span class="text-3xl font-black text-[#052d62] bg-[#cbb155] px-4 py-1 rounded-lg shadow-sm italic uppercase">${estatusW}</span>
+                                <span class="text-[10px] block opacity-60 uppercase font-bold mb-1 italic">Tu código PG es:</span>
+                                <span class="text-3xl font-black text-[#052d62] bg-[#cbb155] px-4 py-1 rounded-lg shadow-sm italic uppercase tracking-widest">
+                                    ${codigoV === "repetido +1 vez" ? "---" : codigoV}
+                                </span>
                             </div>
 
                             <div class="mb-5 py-4 border-t border-gray-200">
-                                <span class="text-[11px] block font-black text-[#cbb155] uppercase mb-1 tracking-wider">SORTEO GRATUITO 🎁</span>
-                                <span class="text-xl block font-bold leading-tight uppercase">${productoP}</span>
+                                <span class="text-[11px] block font-black text-[#cbb155] uppercase mb-1 tracking-wider italic">SORTEO GRATUITO 🎁</span>
+                                <span class="text-xl block font-bold leading-tight uppercase italic">${productoP}</span>
                             </div>
 
                             <div class="mb-0 py-4 border-t border-gray-200">
-                                <span class="text-[11px] block font-black text-[#cbb155] uppercase mb-1 tracking-wider">VIP 🏆</span>
+                                <span class="text-[11px] block font-black text-[#cbb155] uppercase mb-1 tracking-wider italic">VIP 🏆</span>
                                 <span class="text-xl block font-black italic tracking-tight ${vipAA === 'Accedes 😎' ? 'text-blue-700' : 'text-gray-400'}">
                                     ${vipAA}
                                 </span>
