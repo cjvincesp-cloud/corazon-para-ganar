@@ -80,14 +80,13 @@
             seccion.classList.remove('hidden');
             seccion.classList.add('animate-fade-in');
             
-            // Limpiar resultados al volver o entrar
             if(idSeccion === 'consultaSection') {
                 document.getElementById('resultado').classList.add('hidden');
                 document.getElementById('celularInput').value = '';
             }
         }
 
-        // MOTOR DE BÚSQUEDA (VERSIÓN 1 INTEGRADA)
+        // MOTOR DE BÚSQUEDA
         async function consultarEstatus() {
             const celularUsuario = document.getElementById('celularInput').value.trim();
             const resultadoDiv = document.getElementById('resultado');
@@ -162,11 +161,13 @@
         // ENLACES EXTERNOS
         function abrirRegistro() {
             alert("Recuerda: Si acabas de inscribirte, espera 5 minutos para que el sistema se actualice ⏳");
+            // Aquí pones tu link de Google Forms cuando lo tengas
             window.open('https://docs.google.com/forms/u/0/', '_blank');
         }
 
         function irAlCanal() {
-            window.open('https://whatsapp.com/channel/', '_blank');
+            // ENLACE ACTUALIZADO AL CANAL OFICIAL
+            window.open('https://whatsapp.com/channel/0029Vb73Zsj3wtb5WDTAdM1t', '_blank');
         }
 
         window.addEventListener('offline', () => {
