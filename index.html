@@ -8,6 +8,11 @@
     <style>
         .card-anim { transition: all 0.3s ease; }
         .card-anim:hover { transform: translateY(-10px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.5s ease forwards; }
     </style>
 </head>
 <body class="bg-[#052d62] text-white font-sans min-h-screen flex items-center justify-center p-4">
@@ -42,16 +47,23 @@
 
         <div id="consultaSection" class="hidden max-w-md mx-auto bg-[#f1f1f1] rounded-3xl p-8 shadow-2xl text-[#052d62]">
             <div class="space-y-4">
-                <input type="tel" id="celularInput" maxlength="9" placeholder="999888777" 
-                    class="w-full p-4 rounded-xl border-4 border-[#cbb155] text-2xl text-center font-bold bg-white focus:outline-none">
-                <p class="text-[10px] text-center font-bold text-[#052d62] opacity-80 italic">Escribe el número con el que te registraste.</p>
-                
-                <button onclick="alert('Aquí conectaremos el motor de búsqueda en la siguiente fase')" class="w-full bg-[#052d62] text-[#cbb155] font-black py-5 rounded-xl text-lg shadow-lg hover:bg-black transition-all">
+                <div>
+                    <input type="tel" id="celularInput" maxlength="9" placeholder="999888777" 
+                        class="w-full p-4 rounded-xl border-4 border-[#cbb155] text-2xl text-center font-bold bg-white focus:outline-none placeholder:text-gray-300">
+                    <p class="text-[10px] text-center mt-2 font-bold text-[#052d62] opacity-80 italic">
+                        Escribe el número de teléfono con el que te registraste.
+                    </p>
+                </div>
+
+                <button onclick="consultarEstatus()" class="w-full bg-[#052d62] text-[#cbb155] font-black py-5 rounded-xl text-lg shadow-lg hover:bg-black transition-all uppercase italic text-center">
                     CONSULTAR REGISTRO
                 </button>
+                
+                <div id="resultado" class="hidden mt-6 p-6 rounded-2xl text-center font-bold border-2">
+                    </div>
 
-                <button onclick="mostrarSeccion('homeSection')" class="w-full text-[10px] font-black uppercase tracking-widest opacity-50 hover:opacity-100 mt-4">
-                    ← Volver al inicio
+                <button onclick="mostrarSeccion('homeSection')" class="w-full text-[10px] font-black uppercase tracking-widest opacity-50 hover:opacity-100 mt-4 text-[#052d62]">
+                    ← Volver al menú principal
                 </button>
             </div>
         </div>
@@ -59,38 +71,107 @@
     </div>
 
     <script>
-        // Lógica de navegación entre secciones
+        // NAVEGACIÓN
         function mostrarSeccion(idSeccion) {
             document.getElementById('homeSection').classList.add('hidden');
             document.getElementById('consultaSection').classList.add('hidden');
             
-            document.getElementById(idSeccion).classList.remove('hidden');
-            document.getElementById(idSeccion).classList.add('animate-fade-in');
+            const seccion = document.getElementById(idSeccion);
+            seccion.classList.remove('hidden');
+            seccion.classList.add('animate-fade-in');
+            
+            // Limpiar resultados al volver o entrar
+            if(idSeccion === 'consultaSection') {
+                document.getElementById('resultado').classList.add('hidden');
+                document.getElementById('celularInput').value = '';
+            }
         }
 
+        // MOTOR DE BÚSQUEDA (VERSIÓN 1 INTEGRADA)
+        async function consultarEstatus() {
+            const celularUsuario = document.getElementById('celularInput').value.trim();
+            const resultadoDiv = document.getElementById('resultado');
+            const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSVSgHlway102guhsuSOkbVIZyBLybfeCAJpAEAUYf4gp3ir25Av8LHp41PSAIc81TuWHnSgIu7jXuv/pub?gid=666326084&single=true&output=csv';
+
+            if (celularUsuario.length < 9) {
+                alert("Por favor, ingresa los 9 dígitos de tu celular.");
+                return;
+            }
+
+            resultadoDiv.innerHTML = "Buscando...";
+            resultadoDiv.className = "mt-6 p-6 rounded-2xl text-center font-bold border-2 bg-gray-100 block text-[#052d62] animate-pulse";
+            resultadoDiv.classList.remove('hidden');
+
+            try {
+                const response = await fetch(url);
+                const data = await response.text();
+                const filas = data.split('\n');
+                let encontrado = false;
+
+                for (let i = filas.length - 1; i >= 1; i--) {
+                    const columnas = filas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    const celularCSV = columnas[0] ? columnas[0].replace(/\D/g, '').trim() : "";
+                    const estatusM = columnas[12] ? columnas[12].trim() : ""; 
+
+                    if (celularCSV === celularUsuario && estatusM !== "registro no válido") {
+                        const nombre = columnas[3] ? columnas[3].replace(/['"]+/g, '').trim() : "HINCHA"; 
+                        const codigoV = columnas[21] ? columnas[21].replace(/['"]+/g, '').trim() : "---"; 
+                        const fechaJ = columnas[9] ? columnas[9].replace(/['"]+/g, '').trim() : "---"; 
+                        const productoP = columnas[15] ? columnas[15].replace(/['"]+/g, '').trim() : "---"; 
+                        const vipAA = columnas[26] ? columnas[26].replace(/['"]+/g, '').trim() : "AL VIP, no estas participando"; 
+
+                        resultadoDiv.innerHTML = `
+                            <div class="text-2xl mb-5 border-b-2 border-gray-200 pb-2 uppercase font-black tracking-tight">${nombre}</div>
+                            <div class="mb-5">
+                                <span class="text-[10px] block opacity-60 uppercase font-bold mb-1 italic">Tu código PG es:</span>
+                                <span class="text-3xl font-black text-[#052d62] bg-[#cbb155] px-4 py-1 rounded-lg shadow-sm italic uppercase tracking-widest">
+                                    ${codigoV === "repetido +1 vez" ? "---" : codigoV}
+                                </span>
+                            </div>
+                            <div class="mb-5 py-4 border-t border-gray-200 text-[#052d62]">
+                                <span class="text-[11px] block font-black text-[#cbb155] uppercase mb-1 tracking-wider italic">SORTEO GRATUITO 🎁</span>
+                                <span class="text-xl block font-bold leading-tight uppercase italic mb-2">${productoP}</span>
+                                <div class="bg-gray-100 py-1 px-3 rounded-md inline-block">
+                                    <span class="text-[10px] opacity-70 uppercase font-bold">Fecha:</span>
+                                    <span class="text-xs font-black uppercase"> ${fechaJ}</span>
+                                </div>
+                            </div>
+                            <div class="mb-0 py-4 border-t border-gray-200">
+                                <span class="text-[11px] block font-black text-[#cbb155] uppercase mb-1 tracking-wider italic">VIP 🏆</span>
+                                <span class="text-xl block font-black italic tracking-tight ${vipAA === 'Accedes 😎' ? 'text-blue-700' : 'text-gray-400'}">
+                                    ${vipAA}
+                                </span>
+                            </div>
+                        `;
+                        resultadoDiv.className = "mt-6 p-6 rounded-2xl text-center font-bold border-4 border-[#cbb155] bg-white text-[#052d62] block shadow-xl animate-fade-in";
+                        encontrado = true;
+                        break;
+                    }
+                }
+
+                if (!encontrado) {
+                    resultadoDiv.innerHTML = "No estas registrado";
+                    resultadoDiv.className = "mt-6 p-6 rounded-2xl text-center font-bold border-2 border-red-500 bg-red-100 text-red-700 block";
+                }
+            } catch (error) {
+                resultadoDiv.innerHTML = "ERROR DE CONEXIÓN";
+                resultadoDiv.className = "mt-6 p-6 rounded-2xl text-center font-bold border-2 border-orange-500 bg-orange-100 text-orange-700 block";
+            }
+        }
+
+        // ENLACES EXTERNOS
         function abrirRegistro() {
             alert("Recuerda: Si acabas de inscribirte, espera 5 minutos para que el sistema se actualice ⏳");
-            // Aquí pondrás tu link de Google Forms
             window.open('https://docs.google.com/forms/u/0/', '_blank');
         }
 
         function irAlCanal() {
-            // Aquí pondrás el link de tu Canal de WhatsApp
             window.open('https://whatsapp.com/channel/', '_blank');
         }
 
-        // Simulación de detección de internet
         window.addEventListener('offline', () => {
-            alert("¡Vaya! Parece que perdimos la conexión con la tribuna. Revisa tu internet y vuelve a intentarlo para no quedarte fuera del sorteo. ⚪🔵");
+            alert("¡Vaya! Parece que perdimos la conexión con la tribuna. Revisa tu internet y vuelve a intentarlo. ⚪🔵");
         });
     </script>
-
-    <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in { animation: fadeIn 0.5s ease forwards; }
-    </style>
 </body>
 </html>
