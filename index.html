@@ -29,19 +29,21 @@
             <div onclick="abrirRegistro()" class="card-anim bg-[#f1f1f1] p-8 rounded-3xl shadow-2xl text-[#052d62] text-center cursor-pointer border-b-8 border-[#cbb155]">
                 <div class="text-5xl mb-4">📝</div>
                 <h2 class="text-xl font-black uppercase italic leading-tight">¡Inscríbete aquí!</h2>
-                <p class="text-xs mt-3 opacity-70 font-bold">Participa por la piel del 2004 y más premios.</p>
+                <p class="text-[11px] mt-3 opacity-80 font-bold leading-tight">
+                    ¡Gánate la del más grande! Sorteamos camisetas oficiales, visitas al Templo de Matute y más premios grones.
+                </p>
             </div>
 
             <div onclick="mostrarSeccion('consultaSection')" class="card-anim bg-[#f1f1f1] p-8 rounded-3xl shadow-2xl text-[#052d62] text-center cursor-pointer border-b-8 border-[#cbb155]">
                 <div class="text-5xl mb-4">🔍</div>
                 <h2 class="text-xl font-black uppercase italic leading-tight">Verifica tu estado</h2>
-                <p class="text-xs mt-3 opacity-70 font-bold">Revisa tu código PG y estatus de sorteo.</p>
+                <p class="text-[11px] mt-3 opacity-80 font-bold leading-tight">Revisa tu código PG y confirma si ya estás participando en el próximo sorteo.</p>
             </div>
 
             <div onclick="irAlCanal()" class="card-anim bg-[#f1f1f1] p-8 rounded-3xl shadow-2xl text-[#052d62] text-center cursor-pointer border-b-8 border-[#cbb155]">
                 <div class="text-5xl mb-4">🔵⚪</div>
                 <h2 class="text-xl font-black uppercase italic leading-tight text-sm">Comunidad Corazón para Ganar</h2>
-                <p class="text-xs mt-3 opacity-70 font-bold">Únete al canal oficial y no te pierdas nada.</p>
+                <p class="text-[11px] mt-3 opacity-80 font-bold leading-tight">Únete al canal oficial de WhatsApp y entérate de los ganadores en vivo.</p>
             </div>
         </div>
 
@@ -71,7 +73,6 @@
     </div>
 
     <script>
-        // NAVEGACIÓN
         function mostrarSeccion(idSeccion) {
             document.getElementById('homeSection').classList.add('hidden');
             document.getElementById('consultaSection').classList.add('hidden');
@@ -86,7 +87,6 @@
             }
         }
 
-        // MOTOR DE BÚSQUEDA
         async function consultarEstatus() {
             const celularUsuario = document.getElementById('celularInput').value.trim();
             const resultadoDiv = document.getElementById('resultado');
@@ -158,20 +158,17 @@
             }
         }
 
-        // ENLACES EXTERNOS
         function abrirRegistro() {
             alert("Recuerda: Si acabas de inscribirte, espera 5 minutos para que el sistema se actualice ⏳");
-            // Aquí pones tu link de Google Forms cuando lo tengas
-            window.open('https://docs.google.com/forms/u/0/', '_blank');
+            window.open('https://forms.gle/TQM8fEfGnRLjerou6', '_blank');
         }
 
         function irAlCanal() {
-            // ENLACE ACTUALIZADO AL CANAL OFICIAL
             window.open('https://whatsapp.com/channel/0029Vb73Zsj3wtb5WDTAdM1t', '_blank');
         }
 
         window.addEventListener('offline', () => {
-            alert("¡Vaya! Parece que perdimos la conexión con la tribuna. Revisa tu internet y vuelve a intentarlo. ⚪🔵");
+            alert("¡Vaya! Parece que perdimos la conexión. Revisa tu internet y vuelve a intentarlo. ⚪🔵");
         });
     </script>
 </body>
