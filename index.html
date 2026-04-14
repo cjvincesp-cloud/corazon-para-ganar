@@ -26,12 +26,10 @@
 
         <div id="homeSection" class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            <div onclick="abrirRegistro()" class="card-anim bg-[#f1f1f1] p-8 rounded-3xl shadow-2xl text-[#052d62] text-center cursor-pointer border-b-8 border-[#cbb155]">
-                <div class="text-5xl mb-4">📝</div>
-                <h2 class="text-xl font-black uppercase italic leading-tight">¡Inscríbete aquí!</h2>
-                <p class="text-[11px] mt-3 opacity-80 font-bold leading-tight">
-                    ¡Gánate la del más grande! Sorteamos camisetas oficiales, visitas al Templo de Matute y más premios grones.
-                </p>
+            <div onclick="irAlCanal()" class="card-anim bg-[#f1f1f1] p-8 rounded-3xl shadow-2xl text-[#052d62] text-center cursor-pointer border-b-8 border-[#cbb155]">
+                <div class="text-5xl mb-4">🔵⚪</div>
+                <h2 class="text-xl font-black uppercase italic leading-tight text-sm">Comunidad Corazón para Ganar</h2>
+                <p class="text-[11px] mt-3 opacity-80 font-bold leading-tight">Únete al canal oficial de WhatsApp y entérate de los ganadores en vivo.</p>
             </div>
 
             <div onclick="mostrarSeccion('consultaSection')" class="card-anim bg-[#f1f1f1] p-8 rounded-3xl shadow-2xl text-[#052d62] text-center cursor-pointer border-b-8 border-[#cbb155]">
@@ -40,11 +38,14 @@
                 <p class="text-[11px] mt-3 opacity-80 font-bold leading-tight">Revisa tu código PG y confirma si ya estás participando en el próximo sorteo.</p>
             </div>
 
-            <div onclick="irAlCanal()" class="card-anim bg-[#f1f1f1] p-8 rounded-3xl shadow-2xl text-[#052d62] text-center cursor-pointer border-b-8 border-[#cbb155]">
-                <div class="text-5xl mb-4">🔵⚪</div>
-                <h2 class="text-xl font-black uppercase italic leading-tight text-sm">Comunidad Corazón para Ganar</h2>
-                <p class="text-[11px] mt-3 opacity-80 font-bold leading-tight">Únete al canal oficial de WhatsApp y entérate de los ganadores en vivo.</p>
+            <div onclick="abrirRegistro()" class="card-anim bg-[#f1f1f1] p-8 rounded-3xl shadow-2xl text-[#052d62] text-center cursor-pointer border-b-8 border-[#cbb155]">
+                <div class="text-5xl mb-4">📝</div>
+                <h2 class="text-xl font-black uppercase italic leading-tight">¡Inscríbete aquí!</h2>
+                <p class="text-[11px] mt-3 opacity-80 font-bold leading-tight">
+                    ¡Gánate la del más grande! Sorteamos camisetas oficiales, visitas al Templo de Matute y más premios grones.
+                </p>
             </div>
+
         </div>
 
         <div id="consultaSection" class="hidden max-w-md mx-auto bg-[#f1f1f1] rounded-3xl p-8 shadow-2xl text-[#052d62]">
@@ -159,7 +160,6 @@
         }
 
         function abrirRegistro() {
-            // Frase mejorada: clara, informativa y mantiene la expectativa
             alert("¡Excelente elección, Grone! Una vez que completes tu inscripción, tu estado se actualizará automáticamente en el sistema en unos 5 minutos. ⏳");
             window.open('https://docs.google.com/forms/d/e/1FAIpQLSeJvTaQxr32B4WjE_m0QTyghcNVm6h78JbZqMoKFgIVQvGAFg/viewform?usp=header', '_blank');
         }
