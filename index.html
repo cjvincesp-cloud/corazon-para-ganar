@@ -546,7 +546,7 @@
             try {
                 const res  = await fetch(WEBAPP_URL, {
                     method : 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain' },
                     body   : JSON.stringify({ telefono }),
                 });
                 const data = await res.json();
