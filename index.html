@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corazón para Ganar - Portal Oficial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #040f1c;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, #0a2a4a 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, #0d1f35 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.5rem 6rem;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            color: #ffffff;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.018) 39px, rgba(255,255,255,0.018) 40px),
+                repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.018) 39px, rgba(255,255,255,0.018) 40px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.75rem;
+            position: relative;
+            z-index: 1;
+        }
+        .header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5rem;
+            color: #ffffff;
+            letter-spacing: 0.06em;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+        .header h1 em { color: #c9a227; font-style: normal; }
+        .header-line { width: 50px; height: 2px; background: #c9a227; margin: 1rem auto; opacity: 0.7; }
+        .header-slogan {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #c9a227;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            opacity: 0.85;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1px;
+            width: 100%;
+            max-width: 720px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .card {
+            background: rgba(255,255,255,0.04);
+            padding: 2.25rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 200px;
+        }
+        .card:last-child { border-right: none; }
+        .card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: #c9a227;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .card:hover { background: rgba(255,255,255,0.08); }
+        .card:hover::after { opacity: 1; }
+        .card h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            color: #ffffff;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 0.75rem;
+        }
+        .card p {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.65;
+            font-weight: 500;
+        }
+        .card-badge {
+            display: inline-block;
+            background: #c9a227;
+            color: #040f1c;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin-bottom: 0.75rem;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 { font-size: 2.6rem; }
+            .grid {
+                grid-template-columns: 1fr;
+                max-width: 360px;
+                display: flex;
+                flex-direction: column-reverse;
+            }
+            .card {
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.06);
+                min-height: auto;
+                padding: 1.75rem 1.25rem;
+            }
+            .card:last-child { border-bottom: none; }
+        }
+
+        .panel {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            z-index: 1;
+        }
+        .panel.on {
+            display: block;
+            animation: up 0.25s ease;
+        }
+        @keyframes up {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-volver {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            padding: 0.65rem 1.2rem;
+            margin-bottom: 1.5rem;
+            transition: background 0.15s, border-color 0.15s, color 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 6px;
+        }
+        .btn-volver:hover {
+            background: rgba(201,162,39,0.2);
+            border-color: #c9a227;
+            color: #ffd84d;
+        }
+
+        .panel-titulo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: #ffffff;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 0.4rem;
+        }
+        .panel-sub {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .inp {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.05);
+            color: #ffffff;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            font-weight: 400;
+            text-align: center;
+            outline: none;
+            letter-spacing: 0.2em;
+            transition: border-color 0.15s, background 0.15s;
+            margin-bottom: 1.25rem;
+        }
+        .inp::placeholder { color: rgba(255,255,255,0.2); }
+        .inp:focus { border-color: #c9a227; background: rgba(255,255,255,0.08); }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1.1rem;
+            border-radius: 8px;
+            background: #c9a227;
+            color: #ffffff;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            border: 1px solid #c9a227;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+            margin-bottom: 1rem;
+            font-weight: 400;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .btn-primary:hover { background: #e0b62e; border-color: #e0b62e; }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .res {
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            display: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .res.ok {
+            display: block;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(201,162,39,0.3);
+        }
+        .res.err {
+            display: block;
+            background: rgba(220,60,60,0.06);
+            border: 1px solid rgba(220,60,60,0.25);
+            color: #f08080;
+        }
+        .res.info {
+            display: block;
+            background: rgba(42,108,192,0.1);
+            border: 1px solid rgba(42,108,192,0.3);
+        }
+        .res-nombre {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            color: #ffffff;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 1.1rem;
+        }
+        .res-label {
+            font-size: 0.6rem;
+            color: #c9a227;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            margin-bottom: 0.4rem;
+        }
+        .res-codigo {
+            display: inline-block;
+            border: 1.5px solid #c9a227;
+            color: #c9a227;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            padding: 0.3rem 1.3rem;
+            border-radius: 6px;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+        }
+        .res-bloque {
+            padding: 0.8rem 0;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            text-align: left;
+        }
+        .res-valor {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        .res-sub {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 0.3rem;
+            font-weight: 500;
+        }
+        .res-msg {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+        .buscando {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            font-weight: 600;
+            animation: pulse 1.1s ease infinite;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        .btn-forms {
+            width: 100%;
+            padding: 0.9rem;
+            border-radius: 8px;
+            background: transparent;
+            color: rgba(255,255,255,0.7);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border: 1px solid rgba(255,255,255,0.15);
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-top: 0.75rem;
+        }
+        .btn-forms:hover {
+            border-color: rgba(255,255,255,0.35);
+            color: #ffffff;
+            background: rgba(255,255,255,0.04);
+        }
+
+        .wa-wrap { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100; }
+        .wa-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #1fad52;
+            border-radius: 50px;
+            padding: 10px 18px 10px 10px;
+            cursor: pointer;
+            transition: transform 0.18s, background 0.15s, box-shadow 0.18s;
+            text-decoration: none;
+            box-shadow: 0 4px 16px rgba(31,173,82,0.35);
+        }
+        .wa-btn:hover { transform: translateY(-3px); background: #22c45c; box-shadow: 0 6px 22px rgba(31,173,82,0.5); }
+        .wa-circle {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .wa-circle svg { width: 20px; height: 20px; }
+        .wa-copy { display: flex; flex-direction: column; }
+        .wa-main { font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; color: #ffffff; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1; }
+        .wa-sub  { font-family: 'Inter', sans-serif; font-size: 0.62rem; color: rgba(255,255,255,0.85); font-weight: 500; margin-top: 3px; }
+
+        @media (max-width: 480px) {
+            .wa-wrap { bottom: 1rem; right: 1rem; }
+            .wa-btn { padding: 8px 14px 8px 8px; }
+            .wa-circle { width: 32px; height: 32px; }
+            .wa-circle svg { width: 17px; height: 17px; }
+            .wa-main { font-size: 0.85rem; }
+            .wa-sub  { font-size: 0.55rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>Corazón <em>para Ganar</em></h1>
+        <div class="header-line"></div>
+        <p class="header-slogan">El portal oficial del hincha</p>
+    </header>
+
+    <!-- HOME -->
+    <div class="grid" id="homeSection">
+        <div class="card" onclick="mostrarInscripcion()">
+            <div class="card-badge" id="cardBadge">Sorteo abierto</div>
+            <h2>Inscríbete aquí</h2>
+            <p id="cardPremioTexto">Cargando sorteo...</p>
+        </div>
+        <div class="card" onclick="mostrarConsulta()">
+            <h2>Verifica tu estado</h2>
+            <p>Consulta si estás participando del sorteo y tu código PG</p>
+        </div>
+        <div class="card" onclick="irAlCanal()">
+            <h2>Comunidad</h2>
+            <p>Ingresa al canal oficial de Corazón para Ganar en WhatsApp</p>
+        </div>
+    </div>
+
+    <!-- PANEL INSCRIPCIÓN (Camino A + B) -->
+    <div class="panel" id="inscripcionSection">
+        <button class="btn-volver" onclick="volverHome()">← Volver al menú</button>
+        <p class="panel-titulo">Inscríbete aquí</p>
+        <p class="panel-sub">Ingresa tu número para participar</p>
+        <input type="tel" id="telInscripcion" maxlength="9" placeholder="999888777" class="inp">
+        <button class="btn-primary" id="btnInscribir" onclick="procesarInscripcion()">Verificar e inscribir</button>
+        <div class="res" id="resInscripcion"></div>
+        <button class="btn-forms" id="btnForms" style="display:none" onclick="abrirRegistro()">
+            Haz click aquí
+        </button>
+    </div>
+
+    <!-- PANEL CONSULTA -->
+    <div class="panel" id="consultaSection">
+        <button class="btn-volver" onclick="volverHome()">← Volver al menú</button>
+        <p class="panel-titulo">Verifica tu estado</p>
+        <p class="panel-sub">Número con el que te registraste</p>
+        <input type="tel" id="celularInput" maxlength="9" placeholder="999888777" class="inp">
+        <button class="btn-primary" onclick="consultarEstatus()">Consultar registro</button>
+        <div class="res" id="resultado"></div>
+    </div>
+
+    <!-- WA FLOTANTE -->
+    <div class="wa-wrap">
+        <a class="wa-btn" href="https://wa.me/51945934981" target="_blank" rel="noopener">
+            <div class="wa-circle">
+                <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 2C8.268 2 2 8.268 2 16c0 2.492.651 4.83 1.79 6.86L2 30l7.347-1.766A13.94 13.94 0 0016 30c7.732 0 14-6.268 14-14S23.732 2 16 2z" fill="white"/>
+                    <path d="M21.5 18.5c-.3-.15-1.77-.87-2.04-.97-.28-.1-.48-.15-.68.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.49-.9-.8-1.5-1.78-1.68-2.08-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.68-1.64-.93-2.24-.24-.58-.49-.5-.68-.51-.17-.01-.37-.01-.57-.01s-.52.07-.8.37c-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.31 1.27.49 1.7.63.72.23 1.37.2 1.88.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.19-.57-.34z" fill="#1fad52"/>
+                </svg>
+            </div>
+            <div class="wa-copy">
+                <span class="wa-main">¿Tienes dudas?</span>
+                <span class="wa-sub">Escríbenos</span>
+            </div>
+        </a>
+    </div>
+
+    <script>
+        // ══════════════════════════════════════════════════════════════════════
+        // CONFIGURACIÓN — edita aquí si cambian las URLs
+        // ══════════════════════════════════════════════════════════════════════
+
+        // ── Base común de todas las URLs CSV (mismo spreadsheet, distinto gid por hoja)
+        const BASE_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSVSgHlway102guhsuSOkbVIZyBLybfeCAJpAEAUYf4gp3ir25Av8LHp41PSAIc81TuWHnSgIu7jXuv/pub?single=true&output=csv';
+
+        // GIDs de cada hoja (número que aparece como #gid=XXXX en la barra del navegador)
+        const CSV_SORTEOS         = `${BASE_CSV}&gid=98731452`;    // hoja: Sorteos
+        const CSV_HINCHAS         = `${BASE_CSV}&gid=1052193857`;  // hoja: Hinchas
+        const CSV_PARTICIPACIONES = `${BASE_CSV}&gid=396133425`;   // hoja: Participaciones
+
+        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzuIIp1I8oNZxA_D4XD1eIdkWi2UAe7MNJK3ikbBVJmP70dGM9vrpriltwnXnR9MADT/exec';
+        const FORMS_URL  = 'https://docs.google.com/forms/d/e/1FAIpQLSeJvTaQxr32B4WjE_m0QTyghcNVm6h78JbZqMoKFgIVQvGAFg/viewform?usp=header';
+        const CANAL_URL  = 'https://whatsapp.com/channel/0029Vb73Zsj3wtb5WDTAdM1t';
+
+        // Columnas hoja Sorteos (índice 0):
+        //   0=id_sorteo | 1=fecha_sorteo | 2=premio_gratuito | 3=premio_vip
+        //   4=estado (abierto/proximo/cerrado) | 5=mensaje_validado
+        //   6=mensaje_duplicado | 7=mensaje_no_registrado
+        //
+        // Columnas hoja Hinchas (índice 0):
+        //   0=id_grone | 1=telefono | 2=primer_nombre | 3=nombre_completo | 4=codigo_pg
+        //
+        // Columnas hoja Participaciones (índice 0):
+        //   0=id_participacion | 1=id_grone | 2=id_sorteo | 3=telefono
+        //   4=participa_gratuito | 5=participa_vip | 6=tipo_vip
+        //   7=nro_operacion | 8=monto_pagado | 9=validacion | 10=fecha_inscripcion
+
+
+        // ══════════════════════════════════════════════════════════════════════
+        // CACHÉ del sorteo activo — se busca una sola vez por sesión
+        // Piénsalo como un cartel que se lee al abrir la tienda:
+        // si ya lo leíste, no vuelves a salir a buscarlo.
+        // ══════════════════════════════════════════════════════════════════════
+        let _sorteoActivo = null;   // null = todavía no buscado | false = no hay ninguno
+
+        async function obtenerSorteoActivo() {
+            if (_sorteoActivo !== null) return _sorteoActivo;
+
+            try {
+                const res   = await fetch(CSV_SORTEOS);
+                const text  = await res.text();
+                const filas = text.trim().split('\n');
+
+                for (let i = 1; i < filas.length; i++) {       // i=0 son los encabezados
+                    if (!filas[i].trim()) continue;
+                    const cols   = parsearFila(filas[i]);
+                    const estado = (cols[4] || '').trim().toLowerCase();   // columna E
+
+                    if (estado === 'abierto') {
+                        _sorteoActivo = {
+                            id           : (cols[0] || '').trim(),
+                            fecha        : (cols[1] || '').trim(),   // fecha_sorteo
+                            premioGratis : (cols[2] || '').trim(),   // premio_gratuito
+                            premioVip    : (cols[3] || '').trim(),   // premio_vip
+                            msgValidado  : (cols[5] || '').trim(),   // mensaje_validado
+                            msgDuplicado : (cols[6] || '').trim(),   // mensaje_duplicado
+                            msgNoReg     : (cols[7] || '').trim(),   // mensaje_no_registrado
+                        };
+                        return _sorteoActivo;
+                    }
+                }
+
+                _sorteoActivo = false;   // no hay fila con estado "Abierto"
+                return false;
+
+            } catch (e) {
+                console.error('Error cargando hoja Sorteos:', e);
+                _sorteoActivo = false;
+                return false;
+            }
+        }
+
+        // Parser CSV robusto: no se rompe con comas dentro de comillas
+        function parsearFila(fila) {
+            return fila
+                .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+                .map(c => c.replace(/^"|"$/g, '').trim());
+        }
+
+
+        // ══════════════════════════════════════════════════════════════════════
+        // CARGA INICIAL — rellena la tarjeta "Inscríbete" con el sorteo activo
+        // ══════════════════════════════════════════════════════════════════════
+        async function cargarDatosSorteo() {
+            const elTexto = document.getElementById('cardPremioTexto');
+            const elBadge = document.getElementById('cardBadge');
+            const sorteo  = await obtenerSorteoActivo();
+
+            if (sorteo) {
+                const txt = sorteo.premioGratis + (sorteo.fecha ? ' · ' + sorteo.fecha : '');
+                elTexto.textContent  = txt;
+                elBadge.textContent  = 'Sorteo abierto';
+                elBadge.style.background = '#c9a227';
+                elBadge.style.color      = '#040f1c';
+            } else {
+                elTexto.textContent      = 'Próximamente...';
+                elBadge.textContent      = 'Sin sorteo activo';
+                elBadge.style.background = 'rgba(255,255,255,0.10)';
+                elBadge.style.color      = 'rgba(255,255,255,0.45)';
+            }
+        }
+
+
+        // ══════════════════════════════════════════════════════════════════════
+        // NAVEGACIÓN — sin cambios
+        // ══════════════════════════════════════════════════════════════════════
+        function mostrarPanel(id) {
+            document.getElementById('homeSection').style.display = 'none';
+            ['inscripcionSection','consultaSection'].forEach(p => {
+                document.getElementById(p).classList.remove('on');
+            });
+            document.getElementById(id).classList.add('on');
+        }
+
+        function volverHome() {
+            ['inscripcionSection','consultaSection'].forEach(p => {
+                document.getElementById(p).classList.remove('on');
+            });
+            document.getElementById('homeSection').style.display = '';
+            document.getElementById('telInscripcion').value = '';
+            document.getElementById('resInscripcion').className = 'res';
+            document.getElementById('resInscripcion').innerHTML = '';
+            document.getElementById('btnForms').style.display = 'none';
+            document.getElementById('btnInscribir').disabled = false;
+            document.getElementById('celularInput').value = '';
+            document.getElementById('resultado').className = 'res';
+            document.getElementById('resultado').innerHTML = '';
+        }
+
+        function mostrarInscripcion() { mostrarPanel('inscripcionSection'); }
+        function mostrarConsulta()    { mostrarPanel('consultaSection'); }
+        function irAlCanal()    { window.open(CANAL_URL, '_blank'); }
+        function abrirRegistro(){
+            alert('¡Bienvenido, Grone! Una vez que completes el formulario, tu estado se actualizará en unos 5 minutos. ⏳');
+            window.open(FORMS_URL, '_blank');
+        }
+
+
+        // ══════════════════════════════════════════════════════════════════════
+        // CAMINO A + B: INSCRIPCIÓN — sin cambios
+        // ══════════════════════════════════════════════════════════════════════
+        async function procesarInscripcion() {
+            const telefono = document.getElementById('telInscripcion').value.trim();
+            const resDiv   = document.getElementById('resInscripcion');
+            const btnI     = document.getElementById('btnInscribir');
+            const btnF     = document.getElementById('btnForms');
+
+            if (telefono.length < 9) {
+                alert('Por favor, ingresa los 9 dígitos de tu celular.');
+                return;
+            }
+
+            btnI.disabled = true;
+            btnF.style.display = 'none';
+            resDiv.className = 'res ok';
+            resDiv.innerHTML = '<span class="buscando">Verificando...</span>';
+
+            try {
+                const res  = await fetch(WEBAPP_URL, {
+                    method : 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body   : JSON.stringify({ telefono }),
+                });
+                const data = await res.json();
+
+                if (data.codigo === 'NO_EXISTE') {
+                    resDiv.className = 'res info';
+                    resDiv.innerHTML = `<span class="res-msg">${data.mensaje}</span>`;
+                    btnF.style.display = 'block';
+                    btnI.disabled = false;
+                } else if (data.codigo === 'YA_INSCRITO') {
+                    resDiv.className = 'res ok';
+                    resDiv.innerHTML = `
+                        <div class="res-nombre">${data.nombre}</div>
+                        <div class="res-label">Tu código PG</div>
+                        <div class="res-codigo">${data.codigoPg}</div>
+                        <div class="res-bloque">
+                            <div class="res-sub">${data.mensaje}</div>
+                        </div>`;
+                    btnI.disabled = false;
+                } else if (data.codigo === 'INSCRITO_AHORA') {
+                    resDiv.className = 'res ok';
+                    resDiv.innerHTML = `
+                        <div class="res-nombre">${data.nombre}</div>
+                        <div class="res-label">Tu código PG</div>
+                        <div class="res-codigo">${data.codigoPg}</div>
+                        <div class="res-bloque">
+                            <div class="res-sub">${data.mensaje}</div>
+                        </div>`;
+                    btnI.disabled = false;
+                } else {
+                    resDiv.className = 'res err';
+                    resDiv.innerHTML = `<span class="res-msg">${data.mensaje || 'Algo salió mal. Intenta nuevamente.'}</span>`;
+                    btnI.disabled = false;
+                }
+            } catch(_) {
+                resDiv.className = 'res err';
+                resDiv.innerHTML = '<span class="res-msg">Error de conexión. Revisa tu internet.</span>';
+                btnI.disabled = false;
+            }
+        }
+
+
+        // ══════════════════════════════════════════════════════════════════════
+        // CONSULTA DE ESTADO — lee de Hinchas + Participaciones (estructura normalizada)
+        // Flujo: teléfono → buscar en Hinchas (nombre, código PG, id_grone)
+        //        → cruzar con Participaciones (¿participa en el sorteo activo?)
+        //        → mostrar datos de Sorteos (premio, fecha)
+        // ══════════════════════════════════════════════════════════════════════
+        async function consultarEstatus() {
+            const celularUsuario = document.getElementById('celularInput').value.trim();
+            const resultadoDiv   = document.getElementById('resultado');
+
+            if (celularUsuario.length < 9) {
+                alert('Por favor, ingresa los 9 dígitos de tu celular.');
+                return;
+            }
+
+            resultadoDiv.className = 'res ok';
+            resultadoDiv.innerHTML = '<span class="buscando">Buscando...</span>';
+
+            try {
+                // Traemos los tres CSVs en paralelo para no esperar uno por uno
+                const [sorteo, resHinchas, resParticipaciones] = await Promise.all([
+                    obtenerSorteoActivo(),
+                    fetch(CSV_HINCHAS),
+                    fetch(CSV_PARTICIPACIONES),
+                ]);
+
+                const premioMostrar  = sorteo ? sorteo.premioGratis : '---';
+                const fechaMostrar   = sorteo ? sorteo.fecha        : '---';
+                const vipPremio      = sorteo ? sorteo.premioVip    : '---';
+                const idSorteoActivo = sorteo ? sorteo.id           : null;
+
+                const textHinchas         = await resHinchas.text();
+                const textParticipaciones = await resParticipaciones.text();
+
+                const filasHinchas         = textHinchas.trim().split('\n');
+                const filasParticipaciones = textParticipaciones.trim().split('\n');
+
+                // ── Paso 1: buscar al hincha por teléfono en Hinchas
+                // cols: 0=id_grone | 1=telefono | 2=primer_nombre | 3=nombre_completo | 4=codigo_pg
+                let hincha = null;
+                for (let i = 1; i < filasHinchas.length; i++) {
+                    if (!filasHinchas[i].trim()) continue;
+                    const cols   = parsearFila(filasHinchas[i]);
+                    const telCSV = (cols[1] || '').replace(/\D/g, '').trim();
+                    if (telCSV === celularUsuario) {
+                        hincha = {
+                            idGrone  : (cols[0] || '').trim(),
+                            nombre   : (cols[3] || cols[2] || 'HINCHA').trim(),
+                            codigoPg : (cols[4] || '---').trim(),
+                        };
+                        break;
+                    }
+                }
+
+                // No está en Hinchas → nunca se registró
+                if (!hincha) {
+                    resultadoDiv.className = 'res err';
+                    resultadoDiv.innerHTML = '<span class="res-msg">No estás registrado. <a href="' + FORMS_URL + '" target="_blank" rel="noopener" style="color:#f08080;text-decoration:underline;font-weight:700">Inscríbete aquí</a></span>';
+                    return;
+                }
+
+                // ── Paso 2: buscar en Participaciones si tiene una fila validada para el sorteo activo
+                // cols: 0=id_participacion | 1=id_grone | 2=id_sorteo | 3=telefono
+                //       4=participa_gratuito | 5=participa_vip | 6=tipo_vip
+                //       7=nro_operacion | 8=monto_pagado | 9=validacion | 10=fecha_inscripcion
+                let participacion = null;
+                for (let i = filasParticipaciones.length - 1; i >= 1; i--) {
+                    if (!filasParticipaciones[i].trim()) continue;
+                    const cols       = parsearFila(filasParticipaciones[i]);
+                    const idGroneP   = (cols[1] || '').trim();
+                    const idSorteoP  = (cols[2] || '').trim();
+                    const validacion = (cols[9] || '').trim().toLowerCase(); // toLowerCase → "Validado" = "validado"
+
+                    if (idGroneP === hincha.idGrone && idSorteoP === idSorteoActivo && validacion === 'validado') {
+                        participacion = {
+                            participaGratis : (cols[4] || '').trim().toUpperCase() === 'SI',
+                            participaVip    : (cols[5] || '').trim().toUpperCase() === 'SI',
+                            tipoVip         : (cols[6] || '').trim(),
+                        };
+                        break;
+                    }
+                }
+
+                // ── Paso 3: construir respuesta visual
+                if (!participacion) {
+                    // Está en el sistema pero no inscrito en este sorteo
+                    resultadoDiv.className = 'res err';
+                    resultadoDiv.innerHTML = `
+                        <div class="res-nombre">${hincha.nombre}</div>
+                        <div class="res-label">Tu código PG</div>
+                        <div class="res-codigo">${hincha.codigoPg}</div>
+                        <div class="res-bloque">
+                            <div class="res-valor" style="color:rgba(255,255,255,0.5);font-size:0.95rem;">
+                                Aún no estás participando en este sorteo.
+                            </div>
+                            <div class="res-sub" style="margin-top:0.5rem;">
+                                Regresa al menú e inscríbete con tu número.
+                            </div>
+                        </div>`;
+                } else {
+                    const esVip    = participacion.participaVip;
+                    const textoVip = esVip
+                        ? (participacion.tipoVip ? `Accedes · ${participacion.tipoVip}` : 'Accedes 😎')
+                        : 'No participas al VIP';
+
+                    resultadoDiv.className = 'res ok';
+                    resultadoDiv.innerHTML = `
+                        <div class="res-nombre">${hincha.nombre}</div>
+                        <div class="res-label">Tu código PG</div>
+                        <div class="res-codigo">${hincha.codigoPg}</div>
+                        <div class="res-bloque">
+                            <div class="res-label">Sorteo gratuito 🎁</div>
+                            <div class="res-valor">${premioMostrar}</div>
+                            <div class="res-sub">Fecha: ${fechaMostrar}</div>
+                            <div class="res-valor" style="color:#c9a227;font-size:0.9rem;margin-top:0.5rem">✓ Estás participando</div>
+                        </div>
+                        <div class="res-bloque">
+                            <div class="res-label">VIP 🏆</div>
+                            <div class="res-sub" style="margin-bottom:0.3rem">${vipPremio}</div>
+                            <div class="res-valor" style="color:${esVip ? '#c9a227' : 'rgba(255,255,255,0.4)'}">
+                                ${textoVip}
+                            </div>
+                        </div>`;
+                }
+
+            } catch(err) {
+                console.error('Error en consultarEstatus:', err);
+                resultadoDiv.className = 'res err';
+                resultadoDiv.innerHTML = '<span class="res-msg">Error de conexión. Revisa tu internet.</span>';
+            }
+        }
+
+
+        // ══════════════════════════════════════════════════════════════════════
+        // INIT
+        // ══════════════════════════════════════════════════════════════════════
+        window.addEventListener('DOMContentLoaded', cargarDatosSorteo);
+        window.addEventListener('offline', () => {
+            alert('¡Vaya! Parece que perdimos la conexión. Revisa tu internet y vuelve a intentarlo. ⚪🔵');
+        });
+    </script>
+</body>
+</html>
